@@ -8,20 +8,35 @@ function upperCaseFirst(item)
     return item.charAt(0).toUpperCase() + item.slice(1);
 }
 
+function buildListItems(items, onNavigate)
+{
+    if (items[0].link !== 'undefined' && items.length > 0) {
+        items.map((oneLink, key) => (
+            <li key={ oneLink.navigate } data-key={ key }>
+                <a key={ oneLink.navigate }
+                    onClick={ event => onNavigate(event, oneLink.navigate, items.length - key) }
+                    aria-label={ oneLink.navigate }>
+                    { upperCaseFirst(oneLink.title) }
+                </a>
+                <AngleRightIcon />
+            </li>
+        ));
+    } else {
+        items.map((oneLink, key) => (
+            <li key={ key }>
+                { oneLink }
+                <AngleRightIcon />
+            </li>
+        ));
+    }
+}
+
 const Breadcrumbs = ({ items, current, className, onNavigate, ...props }) => (
     <React.Fragment>
         {
-            items.length > 0 && <ol { ...props } className={ classnames(className, 'ins-breadcrumbs') } widget-type='InsightsBreadcrumbs'>
-                { items.map((oneLink, key) => (
-                    <li key={ oneLink.navigate } data-key={ key }>
-                        <a key={ oneLink.navigate }
-                            onClick={ event => onNavigate(event, oneLink.navigate, items.length - key) }
-                            aria-label={ oneLink.navigate }>
-                            { upperCaseFirst(oneLink.title) }
-                        </a>
-                        <AngleRightIcon />
-                    </li>
-                )) }
+            items.length > 0 &&
+            <ol { ...props } className={ classnames(className, 'ins-breadcrumbs') } widget-type='InsightsBreadcrumbs'>
+                { buildListItems(items, onNavigate) }
 
                 { current &&
         <li className="ins-active">
